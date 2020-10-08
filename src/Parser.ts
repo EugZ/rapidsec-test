@@ -1,11 +1,14 @@
-import { RSS_FEED } from "./constants";
+import { RSS_FEED, RSS_LOGS } from "./constants";
 
 class Parser {
     private parser;
+    private url: string;
     private feed: Array<RSS_FEED> = [];
+    private logs: Array<RSS_LOGS> = [];
 
-    constructor(parser) {
+    constructor(parser, url: string) {
         this.parser = parser;
+        this.url = url;
     }
 
     private getPoints = (content: string): number => {
@@ -64,24 +67,43 @@ class Parser {
     };
 
     private async getRssFeed() {
-        const feed = await this.parser.parseURL(
-            "https://hnrss.org/newest?points=10",
-        );
+        const feed = await this.parser.parseURL(this.url);
 
         feed.items.forEach((item, index) => {
             this.feed[index] = this.formatRSSItem(item);
         });
-
-        // TEST
-        this.feed.forEach(feedItem => {
-            console.log("FEED ITEM ===========");
-            console.log(feedItem);
-        });
-        // TEST
     }
 
-    public startParse = () => {
-        this.getRssFeed();
+    private log({ url, request_time, amount_returned, status }): void {
+        this.logs.push({
+            url,
+            request_time,
+            amount_returned,
+            status: status ? "success" : "failure",
+        });
+    }
+
+    public startParse = async () => {
+        let isSuccess: boolean = true;
+        let totalTime: number = 0;
+
+        try {
+            const startTime = Date.now();
+            await this.getRssFeed();
+            const endTime = Date.now();
+            totalTime = endTime - startTime;
+        } catch (e) {
+            isSuccess = false;
+        } finally {
+            this.log({
+                url: this.url,
+                request_time: totalTime,
+                amount_returned: this.feed.length,
+                status: isSuccess,
+            });
+
+            console.log(this.logs);
+        }
     };
 }
 

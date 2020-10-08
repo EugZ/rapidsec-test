@@ -4,8 +4,11 @@
     "description": "Node.js with Elasticsearch",
     "main": "dist/app.js",
     "dependencies": {
+        "axios": "^0.20.0",
         "cron": "^1.8.2",
         "express": "^4.16.4",
+        "feedparser": "^2.2.10",
+        "node-fetch": "^2.6.1",
         "rss-parser": "^3.9.0"
     },
     "devDependencies": {

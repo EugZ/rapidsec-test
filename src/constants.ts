@@ -1,4 +1,4 @@
-export const CRON_DELAY: string = "*/5 * * * * *";
+export const CRON_DELAY: string = "*/10 * * * * *"; // every 10 seconds
 
 export type RSS_FEED = {
     title: string;
@@ -13,5 +13,5 @@ export type RSS_LOGS = {
     url: string;
     request_time: number;
     amount_returned: number;
-    status: "sucees" | "failure";
+    status: "success" | "failure";
 };
