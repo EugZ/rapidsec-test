@@ -1,4 +1,4 @@
-export const CRON_DELAY: string = "*/10 * * * * *"; // every 10 seconds
+export const CRON_DELAY: string = "* */10 * * * *"; // every 10 minutes
 
 export type RSS_FEED = {
     title: string;

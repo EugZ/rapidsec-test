@@ -1,14 +1,25 @@
 import { RSS_FEED, RSS_LOGS } from "./constants";
+import { Client } from "@elastic/elasticsearch";
+const EventEmmiter = require("events");
 
-class Parser {
+class Parser extends EventEmmiter {
     private parser;
     private url: string;
     private feed: Array<RSS_FEED> = [];
     private logs: Array<RSS_LOGS> = [];
+    private elasticClient;
 
     constructor(parser, url: string) {
+        super();
+
         this.parser = parser;
         this.url = url;
+
+        this.elasticClient = new Client({
+            node: process.env.ELASTIC_ENDPOINT,
+        });
+
+        this.addListener("parseEnd", this.sendDataToElastic);
     }
 
     private getPoints = (content: string): number => {
@@ -83,6 +94,46 @@ class Parser {
         });
     }
 
+    private sendDataToElastic() {
+        this.feed.forEach(feedItem => {
+            console.log("THIS", this);
+            const {
+                title,
+                timestamp,
+                link,
+                creator,
+                points,
+                comments,
+            } = feedItem;
+
+            this.elasticClient.index({
+                index: "rss",
+                body: {
+                    title,
+                    timestamp,
+                    link,
+                    creator,
+                    points,
+                    comments,
+                },
+            });
+        });
+
+        this.logs.forEach(logItem => {
+            const { url, request_time, amount_returned, status } = logItem;
+
+            this.elasticClient.index({
+                index: "log",
+                body: {
+                    url,
+                    request_time,
+                    amount_returned,
+                    status,
+                },
+            });
+        });
+    }
+
     public startParse = async () => {
         let isSuccess: boolean = true;
         let totalTime: number = 0;
@@ -102,7 +153,7 @@ class Parser {
                 status: isSuccess,
             });
 
-            console.log(this.logs);
+            this.emit("parseEnd");
         }
     };
 }
