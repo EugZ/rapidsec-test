@@ -1,4 +1,5 @@
 import express from "express";
+import Job from "./cron";
 
 const app = express();
 
@@ -9,5 +10,6 @@ app.get("/", (req, res) => {
 });
 
 app.listen(PORT, () => {
-    return console.log(`server is listening on ${PORT}`);
+    console.log(`server is listening on ${PORT}`);
+    Job.start();
 });
