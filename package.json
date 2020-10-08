@@ -1,0 +1,31 @@
+{
+    "name": "rapidsec-test",
+    "version": "1.0.0",
+    "description": "Node.js with Elasticsearch",
+    "main": "dist/app.js",
+    "dependencies": {
+        "cron": "^1.8.2",
+        "express": "^4.16.4",
+        "rss-parser": "^3.9.0"
+    },
+    "devDependencies": {
+        "@types/express": "^4.16.1",
+        "tslint": "^5.12.1",
+        "typescript": "^3.3.3"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "tsc && node dist/app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/EugZ/rapidsec-test.git"
+    },
+    "keywords": [],
+    "author": "Eugene Zubkov",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/EugZ/rapidsec-test/issues"
+    },
+    "homepage": "https://github.com/EugZ/rapidsec-test#readme"
+}
